@@ -4,19 +4,12 @@
 pre-commit:
   parallel: true
   commands:
-    rubocop:
-      glob: "*.rb"
-      run: bundle exec rubocop {staged_files}
-    eslint:
-      glob: "*.{js,ts,vue}"
-      run: npx eslint {staged_files}
-    prettier:
-      glob: "*.{js,ts,vue,json,yml}"
-      run: npx prettier --check {staged_files}
+    ci:
+      run: bin/ci
 
-pre-push:
-  commands:
-    brakeman:
-      run: bundle exec brakeman -q
-    test:
-      run: bundle exec rails test
+# pre-push:
+#   commands:
+#     brakeman:
+#       run: bundle exec brakeman -q
+#     test:
+#       run: bundle exec rails test
