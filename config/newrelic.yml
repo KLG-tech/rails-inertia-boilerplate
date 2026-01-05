@@ -1,0 +1,106 @@
+# New Relic Ruby Agent Configuration
+# https://docs.newrelic.com/docs/agents/ruby-agent/configuration/ruby-agent-configuration
+#
+# This file configures the New Relic Ruby agent for APM monitoring.
+# All sensitive values should be set via environment variables.
+
+common: &default_settings
+  # Your New Relic license key (required)
+  license_key: <%= ENV.fetch("NEW_RELIC_LICENSE_KEY", "") %>
+
+  # Your application name as it appears in New Relic
+  app_name: <%= ENV.fetch("NEW_RELIC_APP_NAME", "Rails Inertia Boilerplate") %>
+
+  # Enable distributed tracing for microservices
+  distributed_tracing:
+    enabled: true
+
+  # Application logging configuration
+  application_logging:
+    enabled: true
+    forwarding:
+      enabled: <%= ENV.fetch("NEW_RELIC_LOG_FORWARDING", "true") == "true" %>
+      max_samples_stored: 10000
+    metrics:
+      enabled: true
+    local_decorating:
+      enabled: false
+
+  # Error collection settings
+  error_collector:
+    enabled: true
+    capture_source: true
+    ignore_errors: ""
+    ignore_status_codes: "404"
+    expected_status_codes: ""
+    expected_classes: ""
+
+  # Transaction tracer settings
+  transaction_tracer:
+    enabled: true
+    transaction_threshold: apdex_f
+    record_sql: obfuscated
+    stack_trace_threshold: 0.5
+    explain_enabled: true
+    explain_threshold: 0.5
+
+  # Slow SQL recording
+  slow_sql:
+    enabled: true
+    threshold: 1.0
+
+  # Browser monitoring (Real User Monitoring)
+  browser_monitoring:
+    auto_instrument: true
+
+  # Thread profiler
+  thread_profiler:
+    enabled: true
+
+  # Custom attributes to include with all events
+  attributes:
+    enabled: true
+    include:
+      - request.headers.host
+      - request.headers.accept
+      - response.headers.contentType
+
+  # Labels for organizing your applications
+  labels: <%= ENV.fetch("NEW_RELIC_LABELS", "") %>
+
+  # High security mode (disables certain features for compliance)
+  high_security: <%= ENV.fetch("NEW_RELIC_HIGH_SECURITY", "false") == "true" %>
+
+# Development environment - agent disabled by default
+development:
+  <<: *default_settings
+  monitor_mode: false
+  agent_enabled: false
+
+# Test environment - agent disabled
+test:
+  <<: *default_settings
+  monitor_mode: false
+  agent_enabled: false
+
+# Staging environment
+staging:
+  <<: *default_settings
+  monitor_mode: true
+  agent_enabled: <%= ENV.fetch("NEW_RELIC_AGENT_ENABLED", "true") == "true" %>
+  app_name: <%= ENV.fetch("NEW_RELIC_APP_NAME", "Rails Inertia Boilerplate (Staging)") %>
+
+# Production environment
+production:
+  <<: *default_settings
+  monitor_mode: true
+  agent_enabled: <%= ENV.fetch("NEW_RELIC_AGENT_ENABLED", "true") == "true" %>
+  log_level: info
+
+  # Performance optimization for production
+  transaction_tracer:
+    enabled: true
+    record_sql: obfuscated
+
+  # Capture deployment information
+  # Set NEW_RELIC_METADATA_* environment variables for deployment tracking

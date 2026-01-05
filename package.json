@@ -1,0 +1,33 @@
+{
+  "name": "rails-inertia-boilerplate",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@headlessui/vue": "^1.7.23",
+    "@heroicons/vue": "^2.1.5",
+    "@inertiajs/vue3": "^1.0.16",
+    "axios": "^1.6.8",
+    "vue": "^3.4.38"
+  },
+  "devDependencies": {
+    "@typescript-eslint/parser": "^7.18.0",
+    "@vitejs/plugin-vue": "^5.0.5",
+    "autoprefixer": "^10.4",
+    "eslint": "^8.57.0",
+    "eslint-plugin-vue": "^9.28.0",
+    "postcss": "^8.4",
+    "prettier": "^3.3.3",
+    "tailwindcss": "^3.4",
+    "typescript": "^5.3.3",
+    "vite": "^5.4.21",
+    "vite-plugin-ruby": "^3.2.2",
+    "vue-tsc": "^2.1.4"
+  }
+}

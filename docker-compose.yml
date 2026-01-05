@@ -1,0 +1,58 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: rails_inertia_boilerplate_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: rails_inertia_boilerplate
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: rails_inertia_boilerplate_development
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rails_inertia_boilerplate"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: valkey/valkey:8
+    container_name: rails_inertia_boilerplate_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rails_inertia_boilerplate_web
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    environment:
+      RAILS_ENV: production
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      DATABASE_URL: postgres://rails_inertia_boilerplate:password@postgres:5432/rails_inertia_boilerplate_production
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - rails_storage:/rails/storage
+
+volumes:
+  postgres_data:
+  redis_data:
+  rails_storage:
